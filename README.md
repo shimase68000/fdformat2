@@ -68,7 +68,8 @@ In **FORCE MODE**, the `ESC` → `Q` confirmation is not performed.
 
 ## Sector Slide
 
-Sector slide shifts the sector start position while formatting, mainly to speed up disk access over contiguous areas.
+Sector slide shifts the sector start position while formatting,\
+mainly to speed up disk access over contiguous areas.
 
 The default value is 2. It can be changed with `-s`.
 

@@ -1,0 +1,134 @@
+;
+; fdformat2.mac
+;
+;-------------------------------------
+; enum sub state
+
+SUB_STATE_NORMAL		 .equ	0
+SUB_STATE_PENDING		 .equ	1
+SUB_STATE_EXIT_CONFIRM	 .equ	2
+SUB_STATE_IMMEDIATE_EXIT .equ	3
+
+;-------------------------------------
+
+DRIVE_CONFIRM_COL_BASE	.equ	(30+1+26+6)		; 'Drive x(x): Track $xx SL[x] #x' + ' ' + msg + ' [Y/N]'
+SUB_CONFIRM_COL_BASE	.equ	(50)
+
+DRIVE_CONFIRM_COL10		.equ	$30+(DRIVE_CONFIRM_COL_BASE.div.10)
+DRIVE_CONFIRM_COL1		.equ	$30+(DRIVE_CONFIRM_COL_BASE.mod.10)
+
+SUB_CONFIRM_COL10		.equ	$30+(SUB_CONFIRM_COL_BASE.div.10)
+SUB_CONFIRM_COL1		.equ	$30+(SUB_CONFIRM_COL_BASE.mod.10)
+
+;-------------------------------------
+; drive value
+
+DRIVE_COUNT		.equ	(26)	; drive A..Z
+NUM_OF_DRIVE	.equ	(2+2)	; 2 (internal) + 2 (external)
+NUM_OF_TRACK	.equ	(77*2)	; 77 (cylinder) * 2 (side)
+
+MEDIA_2HD		.equ	$FE
+
+;-------------------------------------
+; initial value
+
+INIT_COMP_COUNT		.equ	0
+INIT_SECTOR_NUMBER	.equ	0
+DEFAULT_SLIDE_VALUE	.equ	2
+
+;-------------------------------------
+; IOCS work
+
+DPBTOP			.equ	$1c3c
+
+;-------------------------------------
+; FORMAT MODE
+
+FORMAT_DATA	.equ	$E5
+SECTOR_SIZE	.equ	3		; 0:128 1:256 2:512 [3]:1024
+
+FORMAT_MODE	.equ	(FORMAT_DATA.shl.24).or.(SECTOR_SIZE.shl.16)
+
+;-------------------------------------
+; PDA
+
+PDA_BASE		.equ	$90
+
+;-------------------------------------
+; FDC mode
+
+FDC_MODE_MFM	.equ	%0100_0000
+FDC_MODE_RETRY	.equ	%0010_0000
+FDC_MODE_SEEK	.equ	%0001_0000
+
+FDC_MODE		.equ	FDC_MODE_MFM.or.FDC_MODE_RETRY.or.FDC_MODE_SEEK
+
+;-------------------------------------
+; enum drive state
+
+STATE_EMPTY				.equ	0
+STATE_WAITING			.equ	1
+STATE_FORMATING			.equ	2	; physical format
+STATE_WRITING			.equ	3	; logical format
+STATE_EJECT				.equ	4
+STATE_CONFIRM			.equ	5
+STATE_ERROR_PHYSICAL	.equ	6	; physical format error
+STATE_ERROR_LOGICAL		.equ	7	; logical format error
+
+;-------------------------------------
+;	offset of DPB
+
+DPB_DRIVENUM	.equ	0
+DPB_UNITNUM		.equ	1
+DPB_MEDIABYTE	.equ	22
+
+;-------------------------------------
+; common work
+
+				.offset 0
+
+sub_state:		 .ds.b	1
+
+keyin_data:		 .ds.b	1		; key data
+extkey_data:	 .ds.b	1		; EXT key data
+keyin_conf_flag: .ds.b 1		; keyin confirm flag
+
+phynumber:		 .ds.b	NUM_OF_DRIVE
+
+digit_count:	 .ds.b	1
+
+disp_total_flag: .ds.b	1
+disp_sub_flag:	 .ds.b	1
+
+confirm_flag:	 .ds.b	1
+okay_flag:		 .ds.b	1
+
+sw_physical:	 .ds.b	1
+sw_logical:		 .ds.b	1
+sw_force:		 .ds.b	1
+sw_slide:		 .ds.b	NUM_OF_DRIVE
+sw_usage:		 .ds.b	1
+
+COMMON_WORK_SIZE:
+
+;-------------------------------------
+; drive work
+
+				.offset	0
+
+comp_count:		.ds.l	1
+state:			.ds.b	1
+
+drive_number:	.ds.b	1		; physical drive number 0..3
+c_drive_number:	.ds.b	1		; physical drive number '0'..'3'
+c_drive_letter:	.ds.b	1		; logical drive letter 'A'..'Z', $FF=not exist
+
+track_number:	.ds.b	1
+sector_number:	.ds.b	1
+slide_value:	.ds.b	1		; 0..7 (0:slide off)
+
+disp_flag:		.ds.b	1
+
+				.even
+DRIVE_WORK_SIZE:
+

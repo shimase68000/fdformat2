@@ -1,0 +1,16 @@
+;
+;  title.mac
+;
+
+MARKER_VERSION   .reg   '1.00'
+TITLE_VERSION	 .reg	MARKER_VERSION
+
+TITLE_SUBVERSION .reg   ''
+TITLE_PROGNAME	 .reg	'FDFORMAT2'
+TITLE_COPYRIGHT	 .reg	'Copyright 2026 UG.'
+
+M_VER24          .reg   ((MARKER_VERSION.shr.24).and.$FF)
+M_VER16          .reg   ((MARKER_VERSION.shr.16).and.$FF)
+M_VER8           .reg   ((MARKER_VERSION.shr.8).and.$FF)
+M_VER0           .reg   ((MARKER_VERSION.shr.0).and.$FF)
+FDFORMAT2_MARK   .reg   (M_VER24),(M_VER8),(M_VER0)

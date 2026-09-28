@@ -88,7 +88,7 @@ Disks are formatted as 2HD (1024 bytes x 8 sectors x 77 cylinders x 2 sides).
 
 Logical formatting writes the BPB, FAT, root directory, and a minimal IPL.
 
-A volume serial number is recorded. The generation rule is shared with moformat.
+A volume serial number is recorded. The generation rule is shared with *MOFORMAT*.
 
 Formatted disks can also be read and written by MS-DOS on PC-98 series 2HD (1.2MB FDD) systems.
 
